@@ -3,9 +3,12 @@ import { Filter } from "./Filter";
 import { foods } from "@/dummy/food";
 import { FoodCard } from "./FoodCard";
 import { useFoodFilter } from "../hooks/useFoodFilter";
+import { useGetFood } from "@/features/dashboard/hooks/useGetFood";
 
 export const Foods = () => {
-  const { foodFiltereds, handleOnChange, value } = useFoodFilter({ foods });
+ const {data} = useGetFood({isLanding: true});
+  const { foodFiltereds, handleOnChange, value } = useFoodFilter({ foods: data });
+
   return (
     <div className="container mx-auto py-6 flex flex-col gap-y-4">
       <Filter title="Menu's" onChange={handleOnChange} value={value} />

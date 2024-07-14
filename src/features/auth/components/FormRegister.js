@@ -18,6 +18,14 @@ export const FormRegister = () => {
           value={form?.fullName}
           error={errors.fullName}
         />
+         <SingleLineText
+          name="username"
+          label="Username"
+          placeholder="Input Username ..."
+          onChange={handleOnChange}
+          value={form?.username}
+          error={errors.username}
+        />
         <SingleLineText
           name="email"
           label="Email"

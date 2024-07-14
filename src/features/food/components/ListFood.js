@@ -1,4 +1,5 @@
 import { foods } from "@/dummy/food";
+import { useGetFood } from "@/features/dashboard/hooks/useGetFood";
 import { formatRupiah } from "@/helpers/formatRupiah";
 import Image from "next/image";
 import Link from "next/link";
@@ -7,19 +8,11 @@ import { FaRegImage } from "react-icons/fa";
 
 export const ListFood = () => {
   const id = React.useId();
-
-  const shuffleArray = React.useCallback((array) => {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]]; // Swap elements
-    }
-    return array;
-  }, []);
+  const { data } = useGetFood({isLanding: true});
 
   const halfFoods = React.useMemo(() => {
-    // return shuffleArray(foods);
-    return foods.filter((_, idx) => idx < 5);
-  }, []);
+    return data?.filter((_, idx) => idx < 5);
+  }, [data]);
 
   if (!halfFoods) return <></>;
 

@@ -7,9 +7,13 @@ import { FaPenAlt } from "react-icons/fa";
 import { ModalConfirmDeleteFood } from "../components/ModalConfirmDeleteFood";
 import { ModalEditFood } from "../components/ModalEditFood";
 import { ModalAddFood } from "../components/ModalAddFood";
+import { useGetFood } from "../hooks/useGetFood";
 
 export const Foods = () => {
   const id = React.useId();
+
+ const { data, refetch } = useGetFood({isLanding: false});
+
   return (
     <div className="w-full p-4">
       <div className="flex justify-between">
@@ -23,18 +27,13 @@ export const Foods = () => {
           >
             Add
           </button>
-          <ModalAddFood />
+          <ModalAddFood refetch={refetch}/>
         </div>
       </div>
       <div className="overflow-x-auto">
         <table className="table">
           <thead>
-            <tr>
-              {/* <th>
-                <label>
-                  <input type="checkbox" className="checkbox" />
-                </label>
-              </th> */}
+            <tr> 
               <th>Image</th>
               <th>Title</th>
               <th>Price</th>
@@ -42,13 +41,8 @@ export const Foods = () => {
             </tr>
           </thead>
           <tbody>
-            {foods.map((item) => (
-              <tr key={`${id}-${item.title}-${item.id}`}>
-                {/* <th>
-                  <label>
-                    <input type="checkbox" className="checkbox" />
-                  </label>
-                </th> */}
+            {data?.map((item) => (
+              <tr key={`${id}-${item.title}-${item.id}`}> 
                 <td>
                   <div className="flex items-center gap-3">
                     <div className="avatar">
@@ -79,7 +73,7 @@ export const Foods = () => {
                     >
                       <FaPenAlt />
                     </button>
-                    <ModalEditFood item={item} />
+                    <ModalEditFood item={item} refetch={refetch} />
                     <button
                       className="btn btn-error btn-xs"
                       onClick={() =>
@@ -90,7 +84,7 @@ export const Foods = () => {
                     >
                       <TbTrashFilled />
                     </button>
-                    <ModalConfirmDeleteFood item={item} />
+                    <ModalConfirmDeleteFood item={item} refetch={refetch} />
                   </div>
                 </th>
               </tr>

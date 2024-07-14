@@ -1,38 +1,45 @@
+import { SingleLineText } from "@/components/fields/SingleLineText";
 import Image from "next/image";
 import React from "react";
+import { useEditFood } from "../hooks/useEditFood";
+import { FileUpload } from "@/components/fields/FileUpload";
 
-export const ModalEditFood = ({ item }) => {
+export const ModalEditFood = ({ item, refetch }) => {
+  const { errors, form, handleOnChange, handleSubmit, error, file, handleFileChange } = useEditFood({data: item, refetch});
+
   return (
     <dialog id={`${item.id}-modal-dashboard-edit-food`} className="modal">
       <div className="modal-box">
         <div className="">
           <h2 className="text-center text-xl font-bold">Edit Food</h2>
           <div className="mt-8 flex flex-col gap-y-4">
-            <div>
-              <Image
-                src={item.image}
-                alt={`${item.id}-modal-dashboard-edit-food-image`}
-                width={200}
-                height={200}
-                className="rounded-md"
-              />
-              <input
-                type="file"
-                className="file-input file-input-bordered w-full mt-2"
+            <div> 
+              <FileUpload
+                name="image"
+                label="Image"
+                onChange={handleFileChange}
+                value={file}
+                error={error}
+                currentValue={item.image}
               />
             </div>
-            <input
-              type="text"
-              placeholder="Title"
-              className="input input-bordered w-full"
-              value={item.title}
+            <SingleLineText
+              name="title"
+              label="Title"
+              placeholder="Input Title Food ..."
+              onChange={handleOnChange}
+              value={form?.title}
+              error={errors.title}
             />
-            <input
-              type="number"
-              placeholder="Price"
-              className="input input-bordered w-full"
-              value={item.price}
-            />
+              <SingleLineText
+                type="number"
+                name="price"
+                label="Price"
+                placeholder="Input Price Food ..."
+                onChange={handleOnChange}
+                value={form?.price}
+                error={errors.price}
+              />
           </div>
         </div>
         <div className="flex justify-end gap-x-2 mt-8">
@@ -48,11 +55,7 @@ export const ModalEditFood = ({ item }) => {
           </button>
           <button
             className="btn btn-sm btn-primary"
-            onClick={() => {
-              document
-                .getElementById(`${item.id}-modal-dashboard-edit-food-close`)
-                .click();
-            }}
+            onClick={handleSubmit}
           >
             Submit
           </button>

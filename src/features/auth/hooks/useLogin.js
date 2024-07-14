@@ -1,3 +1,5 @@
+import { api, setAuthToken } from "@/libs/api";
+import { useUserStore } from "@/stores/useUserStore";
 import { useRouter } from "next/navigation";
 import React from "react";
 import toast from "react-hot-toast";
@@ -9,6 +11,7 @@ const defaultData = {
 };
 
 export const useLogin = () => {
+  const { setUser, setToken } = useUserStore();
   const router = useRouter();
   const [form, setForm] = React.useState(defaultData);
   const [errors, setErrors] = React.useState(defaultData);
@@ -61,11 +64,29 @@ export const useLogin = () => {
     }
     const toastId = toast.loading("Login");
 
-    setTimeout(() => {
-      toast.dismiss(toastId);
+     try {
+      const response =  await api.post("/auth/login", form);
+
+      toast.success(`Welcome ...`, {
+        id: toastId
+      });
+
+      const data = response.data;
+
+      localStorage.setItem("token", data.token)
+      setAuthToken(data.token);
+      setToken(data.token);
+      setUser(data.user);
 
       router.push("/dashboard");
-    }, 2000);
+     } catch (error) {
+      console.log(error);
+      const msg = error?.response?.data?.message;
+
+      toast.error(msg, {
+        id: toastId
+      })
+     }
   };
 
   return { handleOnChange, handleSubmit, form, errors };

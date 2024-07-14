@@ -1,3 +1,4 @@
+import { api } from "@/libs/api";
 import { useRouter } from "next/navigation";
 import React from "react";
 import toast from "react-hot-toast";
@@ -15,6 +16,7 @@ export const useRegister = () => {
 
   const dataSchema = z.object({
     fullName: z.string(),
+    username: z.string(),
     email: z.string().email(),
     password: z.string().min(4),
   });
@@ -60,13 +62,26 @@ export const useRegister = () => {
     if (!isValid) {
       return;
     }
-    const toastId = toast.loading("Register");
 
-    setTimeout(() => {
-      toast.dismiss(toastId);
+    const toastId = toast.loading("Register...");
 
-      router.push("/dashboard");
-    }, 2000);
+    setTimeout(async () => {
+      try {
+         await api.post("/auth/register", form);
+
+        toast.success("Register Success", {
+          id: toastId
+        });
+
+        router.push("/login");
+      } catch (error) {
+        const msg = error.response.data.message;
+
+        toast.error(msg, {
+          id: toastId
+        })
+      }
+    }, 2000)
   };
 
   return { handleOnChange, handleSubmit, form, errors };
